@@ -237,7 +237,7 @@ class SummarizerFactory {
     }
 
     _createPkg() {
-        const dirParents = toDirParents(this._initialList);
+        const dirParents = toDirParents(toDirParents(this._initialList));
         if (dirParents.length === 1) {
             return new ReportTree(dirParents[0]);
         }
