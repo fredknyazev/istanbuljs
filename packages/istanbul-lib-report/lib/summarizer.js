@@ -170,15 +170,20 @@ function toDirParents(list) {
         parentNodeList = [];
     list.forEach(function (o) {
         var node = new ReportNode(o.path, o.fileCoverage),
-            parentPath = o.path.parent(),
-            parent = nodeMap[parentPath.toString()];
-
-        if (!parent) {
+            parentPath = o.path.parent();
+        while(parentPath.v.length > 0) {
+          var parent = nodeMap[parentPath.toString()];
+          if (!parent) {
             parent = new ReportNode(parentPath);
             nodeMap[parentPath.toString()] = parent;
             parentNodeList.push(parent);
+          }
+          if (!parent.children.includes(node)) {
+            parent.addChild(node);
+          }
+          parentPath = parentPath.parent();
+          node=parent;
         }
-        parent.addChild(node);
     });
     return parentNodeList;
 }
@@ -258,7 +263,9 @@ function createPackageSummary(coverageMap) {
             prefix = common.elements()[common.elements().length - 1];
         }
         dirParents.forEach(function (node) {
+          if (node.path.length===1) {
             root.addChild(node);
+          }
         });
     }
     return treeFor(root, prefix);
