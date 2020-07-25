@@ -5,7 +5,7 @@
   "description": "monorepo containing the various nuts and bolts that facilitate istanbul.js test instrumentation",
   "repository": {
     "type": "git",
-    "url": "git@github.com:istanbuljs/istanbuljs.git"
+    "url": "git@github.com:fredknyazev/istanbuljs.git"
   },
   "keywords": [
     "istanbuljs",
@@ -15,7 +15,7 @@
   "author": "Ben Coe <ben@npmjs.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/istanbuljs/istanbuljs/issues"
+    "url": "https://github.com/fredknyazev/istanbuljs/issues"
   },
   "homepage": "https://istanbul.js.org/",
   "devDependencies": {
