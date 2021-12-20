@@ -22,7 +22,9 @@ class ReportNode extends BaseNode {
         const root = new ReportNode(new Path([]));
 
         children.forEach(child => {
-            root.addChild(child);
+            if (child.path.length===1) {
+                root.addChild(child);
+            }
         });
 
         return root;
@@ -139,32 +141,40 @@ function findCommonParent(paths) {
     );
 }
 
-function findOrCreateParent(parentPath, nodeMap, created = () => {}) {
-    let parent = nodeMap[parentPath.toString()];
+function findOrCreateParent(parentPath, nodeMap, node, created = () => {}) {
+    while(parentPath.v.length > 0) {
+        let parent = nodeMap[parentPath.toString()];
 
-    if (!parent) {
-        parent = new ReportNode(parentPath);
-        nodeMap[parentPath.toString()] = parent;
-        created(parentPath, parent);
+        if (!parent) {
+            parent = new ReportNode(parentPath);
+            nodeMap[parentPath.toString()] = parent;
+            created(parentPath, parent);
+        }
+        if (!parent.children.includes(node)) {
+          parent.addChild(node);
+        }
+        parentPath = parentPath.parent();
+        node=parent;
     }
 
-    return parent;
+    return nodeMap;
 }
 
 function toDirParents(list) {
-    const nodeMap = Object.create(null);
+    let nodeMap = Object.create(null);
     list.forEach(o => {
-        const parent = findOrCreateParent(o.path.parent(), nodeMap);
-        parent.addChild(new ReportNode(o.path, o.fileCoverage));
+        let node = new ReportNode(o.path, o.fileCoverage);
+        nodeMap = findOrCreateParent(o.path.parent(), nodeMap, node);
     });
 
     return Object.values(nodeMap);
 }
 
 function addAllPaths(topPaths, nodeMap, path, node) {
-    const parent = findOrCreateParent(
+    nodeMap = findOrCreateParent(
         path.parent(),
         nodeMap,
+        node,
         (parentPath, parent) => {
             if (parentPath.hasParent()) {
                 addAllPaths(topPaths, nodeMap, parentPath, parent);
@@ -173,8 +183,6 @@ function addAllPaths(topPaths, nodeMap, path, node) {
             }
         }
     );
-
-    parent.addChild(node);
 }
 
 function foldIntoOneDir(node, parent) {
@@ -257,7 +265,7 @@ class SummarizerFactory {
     }
 
     _createNested() {
-        const nodeMap = Object.create(null);
+        let nodeMap = Object.create(null);
         const topPaths = [];
         this._initialList.forEach(o => {
             const node = new ReportNode(o.path, o.fileCoverage);
