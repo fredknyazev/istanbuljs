@@ -3,13 +3,6 @@
   "version": "2.0.0",
   "private": true,
   "description": "monorepo containing the various nuts and bolts that facilitate istanbul.js test instrumentation",
-  "scripts": {
-    "pretest": "eslint .",
-    "test": "cross-env LERNA_TEST_RUN=1 NODE_ENV=test lerna --ignore nyc exec npm test",
-    "posttest": "node ./monorepo-merge-reports.js && nyc report",
-    "postinstall": "lerna bootstrap --hoist",
-    "release": "lerna publish --conventional-commits --dist-tag=next"
-  },
   "repository": {
     "type": "git",
     "url": "git@github.com:istanbuljs/istanbuljs.git"
@@ -36,7 +29,7 @@
     "eslint-plugin-react": "^7.17.0",
     "glob": "^7.1.6",
     "lerna": "^3.19.0",
-    "nyc": "^15.0.0-beta.2",
+    "nyc": "^15.0.1",
     "prettier": "=1.18.2"
   },
   "nyc": {
